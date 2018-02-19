@@ -1,4 +1,5 @@
 function setup() {
+  noCursor();
   createCanvas(700, 400);
   mySpaceShip = new spaceShip(width*0.13, height*0.25, 153, 100);
   mySpaceShip2 = new spaceShip(width*0.01, height*0.40, 100, 150);
