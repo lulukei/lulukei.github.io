@@ -3,6 +3,7 @@ function setup() {
   mySpaceShip = new spaceShip(width*0.13, height*0.25, 153, 100);
   mySpaceShip2 = new spaceShip(width*0.01, height*0.40, 100, 150);
   mySpaceShip3 = new spaceShip(width*0.25, height*0.60, 80, 360);
+  myZoog = new Zoog (width-400, height/2, 50);
 }
 
 function draw() {
@@ -19,6 +20,8 @@ function draw() {
   mySpaceShip3.moveUpDown();
   mySpaceShip3.moveForward();
   mySpaceShip3.startAgain();
+  myZoog.display();
+  myZoog.navigate();
 
 
   // myZoog.display();
@@ -68,11 +71,12 @@ function spaceShip(tempX, tempY, tempSize, tempAngle) {
   }
 }
 
-function Zoog(tempX, tempY, tempAngle) {
+function Zoog(tempX, tempY, tempSize) {
   this.x = tempX;
   this.y = tempY;
-  this.angle = tempAngle;
+  this.size = tempSize;
 
+//Showing Zoog
   this.display = function () {
     //left leg
     line(this.x, this.y, this.x-75, this.y+100);
@@ -86,20 +90,31 @@ function Zoog(tempX, tempY, tempAngle) {
     //outer eyeball
     strokeWeight(6);
     fill(255);
-    ellipse(this.x, this.y, 180, 120);
+    ellipse(this.x, this.y, this.size, this.size/1.5);
 
      //inner eyeball
      fill(40, 241, 255);
-     ellipse(this.x, this.y, 100, 100);
+     ellipse(this.x, this.y, this.size/1.8, this.size/1.8);
 
     //pupil
       fill(0);
-      ellipse(this.x, this.y, 25, 25);
+      ellipse(this.x, this.y, this.size/7.2, this.size/7.2);
       strokeWeight(20);
   }
-    // moves up and down
-  this.moveUpDown = function () {
-    this.y = this.y + sin(this.angle)/2;
-    this.angle = this.angle + 0.1;
+// Navigating Zoog
+  this.navigate = function() {
+
+      if (keyIsDown(LEFT_ARROW)) {
+      this.x -= 10;
+
+    } if (keyIsDown(RIGHT_ARROW)) {
+        this.x += 10;
+
+    }  if (keyIsDown(DOWN_ARROW)) {
+        this.y += 10;
+
+    }  if (keyIsDown(UP_ARROW)) {
+        this.y -= 10;
+    }
   }
 }
