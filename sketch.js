@@ -1,10 +1,12 @@
+var c;
+
 function setup() {
-  noCursor();
   createCanvas(700, 400);
   mySpaceShip = new spaceShip(width*0.13, height*0.25, 153, 100);
   mySpaceShip2 = new spaceShip(width*0.01, height*0.40, 100, 150);
   mySpaceShip3 = new spaceShip(width*0.25, height*0.60, 80, 360);
-  myZoog = new Zoog (width-400, height/2, 50);
+  myZoog = new Zoog (width-width*0.08, height/2, 50);
+  var c = 3;
 }
 
 function draw() {
@@ -23,10 +25,7 @@ function draw() {
   mySpaceShip3.startAgain();
   myZoog.display();
   myZoog.navigate();
-
-
-  // myZoog.display();
-  // myZoog.moveUpDown();
+  myZoog.update();
 }
 
 function spaceShip(tempX, tempY, tempSize, tempAngle) {
@@ -48,10 +47,12 @@ function spaceShip(tempX, tempY, tempSize, tempAngle) {
     ellipse(this.x + this.size*1/4, this.y-this.size*0.07, this.size*0.4, this.size*0.38);
     fill(40, 241, 255);
     //windows
-    ellipse(this.x, this.y, this.size*0.11, size*0.11);
-    ellipse(this.x, this.y, this.size*0.11, this.size*0.11);
-    ellipse(this.x+this.size*1/4, this.y, this.size*0.11, this.size*0.11);
-    ellipse(this.x+this.size*1/2, this.y, this.size*0.11, this.size*0.11);
+    stroke(40, 241, 255);
+    strokeWeight(this.size/8.5);
+    point(this.x, this.y);
+    point(this.x+this.size*1/4, this.y);
+    point(this.x+this.size*1/2, this.y);
+    noStroke();
   }
 
   this.moveUpDown = function () {
@@ -69,13 +70,14 @@ function spaceShip(tempX, tempY, tempSize, tempAngle) {
      if (this.x > width) {
        this.x = 0;
      }
-  }
+   }
 }
 
-function Zoog(tempX, tempY, tempSize) {
+function Zoog(tempX, tempY, tempRadius) {
   this.x = tempX;
   this.y = tempY;
-  this.size = tempSize;
+  this.radius = tempRadius;
+  this.eyeColor = color(40, 241, 255);
 
 //Showing Zoog
   this.display = function () {
@@ -91,15 +93,15 @@ function Zoog(tempX, tempY, tempSize) {
     //outer eyeball
     strokeWeight(6);
     fill(255);
-    ellipse(this.x, this.y, this.size, this.size/1.5);
+    ellipse(this.x, this.y, this.radius*2, this.radius*2);
 
      //inner eyeball
-     fill(40, 241, 255);
-     ellipse(this.x, this.y, this.size/1.8, this.size/1.8);
+     fill(this.eyeColor);
+     ellipse(this.x, this.y, this.radius/1.8*2, this.radius/1.8*2);
 
     //pupil
       fill(0);
-      ellipse(this.x, this.y, this.size/7.2, this.size/7.2);
+      ellipse(this.x, this.y, this.radius*2/7.2, this.radius*2/7.2);
       strokeWeight(20);
   }
 // Navigating Zoog
@@ -116,6 +118,70 @@ function Zoog(tempX, tempY, tempSize) {
 
     }  if (keyIsDown(UP_ARROW)) {
         this.y -= 10;
+
+    } if (this.x > width) {
+        this.x = width;
+
+    } if (this.x < 0) {
+        this.x = 0;
+
+    } if (this.y > height) {
+        this.y = height;
+
+    } if (this.y < 0) {
+        this.y = 0;
     }
   }
+
+// Zoog changes colour if touches the windows of the spaceship
+  this.update = function () {
+
+    var distancew1s1 = dist(mySpaceShip.x, mySpaceShip.y, myZoog.x, myZoog.y);
+    var distancew1s2 = dist(mySpaceShip2.x, mySpaceShip.y, myZoog.x, myZoog.y);
+    var distancew1s3 = dist(mySpaceShip3.x, mySpaceShip.y, myZoog.x, myZoog.y);
+    var distancew2s1 = dist(mySpaceShip.x+mySpaceShip2.size*1/4, mySpaceShip2.y, myZoog.x, myZoog.y)
+    var distancew2s2 = dist(mySpaceShip2.x+mySpaceShip2.size*1/4, mySpaceShip2.y, myZoog.x, myZoog.y);
+    var distancew2s3 = dist(mySpaceShip3.x+mySpaceShip2.size*1/4, mySpaceShip2.y, myZoog.x, myZoog.y);;
+    var distancew3s1 = dist(mySpaceShip.x+mySpaceShip2.size*1/2, mySpaceShip3.y, myZoog.x, myZoog.y)
+    var distancew3s2 = dist(mySpaceShip2.x+mySpaceShip2.size*1/2, mySpaceShip3.y, myZoog.x, myZoog.y)
+    var distancew3s3 = dist(mySpaceShip3.x+mySpaceShip2.size*1/2, mySpaceShip3.y, myZoog.x, myZoog.y)
+    var c = 3;
+
+    // var distance4 = dist(mouseX, mouseY, myZoog.x, myZoog.y);
+
+    if (distancew1s1 < myZoog.radius || distancew1s2 < myZoog.radius || distancew1s3 < myZoog.radius
+    || distancew2s1 < myZoog.radius || distancew2s2 < myZoog.radius || distancew2s3 < myZoog.radius
+    || distancew3s1 < myZoog.radius || distancew3s2 < myZoog.radius || distancew3s3 < myZoog.radius) {
+        reaction();
+
+    } else {
+      this.navigate();
+      myZoog.eyeColor = color(40, 241, 255);
+     // if (distance4 < myZoog.radius) {
+     //  background(238, 142, 17);
+    // }
+   }
+  }
 }
+
+// Position and color of Zoog are affected by the collision
+function reaction () {
+  var easing = 0.8;
+
+  // Position changes
+  myZoog.x += ((width-width*0.08) - (myZoog.x))* easing;
+
+  //Eye color changes
+  myZoog.eyeColor = color(222, 33, 33);
+}
+
+// // Display number of lives
+// function numberOfLives() {
+//   var c = 3;
+//   fill(255);
+//   textSize(30);
+//   text("Number of lives left : " + c, 50, width*0.10);
+//   if (reaction() == true) {
+//     c = c-1;
+//   }
+// }
